@@ -1,0 +1,187 @@
+:root {
+  --bg: #FFF4E4;
+  --card: #FFFFFF;
+  --ink: #2D2A32;
+  --muted: #8A8291;
+  --purple: #7B61FF;
+  --pink: #FF6FA8;
+  --yellow: #FFC93C;
+  --green: #22B573;
+  --line: #EADFCF;
+  --radius: 24px;
+  --shadow: 0 6px 0 rgba(45, 42, 50, .08), 0 12px 28px rgba(45, 42, 50, .08);
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { margin: 0; height: 100%; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Varela Round', 'Heebo', system-ui, sans-serif;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+button { font: inherit; color: inherit; border: 0; background: none; cursor: pointer; padding: 0; }
+svg { display: block; }
+
+#app { height: 100dvh; }
+.screen { display: none; height: 100%; flex-direction: column; }
+.screen.active { display: flex; }
+
+/* ---------- כפתורים ---------- */
+.round-btn {
+  width: 64px; height: 64px; border-radius: 50%;
+  background: var(--card); box-shadow: var(--shadow);
+  display: grid; place-items: center; flex: none;
+}
+.round-btn svg { width: 32px; height: 32px; }
+.round-btn.small { width: 56px; height: 56px; }
+.round-btn.small svg { width: 28px; height: 28px; }
+.round-btn:active, .tool-btn:active, .pill-btn:active, .bubble:active { transform: translateY(3px); }
+
+/* ---------- בית ---------- */
+.home-top {
+  display: flex; align-items: center; gap: 16px;
+  padding: max(16px, env(safe-area-inset-top)) 24px 8px;
+}
+.home-mascot { width: 76px; height: 120px; flex: none; }
+.home-mascot .mascot { width: 100%; height: 100%; animation: bob 2.4s ease-in-out infinite; }
+.hello { flex: 1; min-width: 0; }
+.hello h1 { font-family: 'Secular One', sans-serif; font-size: clamp(30px, 5vw, 46px); margin: 0; line-height: 1.1; }
+.hello p { margin: 4px 0 0; font-size: 20px; color: var(--muted); }
+.home-actions { display: flex; align-items: center; gap: 12px; }
+.star-pill {
+  display: flex; align-items: center; gap: 8px; height: 56px; padding: 0 18px;
+  background: var(--card); border-radius: 28px; box-shadow: var(--shadow);
+  font-family: 'Secular One', sans-serif; font-size: 26px;
+}
+.star-pill svg { width: 30px; height: 30px; color: var(--yellow); }
+
+.worlds { flex: 1; overflow-y: auto; padding: 8px 24px 40px; display: flex; flex-direction: column; gap: 18px; -webkit-overflow-scrolling: touch; }
+.world {
+  background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow);
+  padding: 18px 20px 20px; border-top: 8px solid var(--wc);
+}
+.world-head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+.world-head h2 { font-family: 'Secular One', sans-serif; font-size: 26px; margin: 0; color: var(--wc); }
+.world-head .letters { font-size: 17px; color: var(--muted); }
+.world-head .soon-tag { margin-inline-start: auto; font-size: 15px; background: #F3EEF9; color: var(--muted); padding: 4px 12px; border-radius: 12px; }
+.lessons { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; }
+.bubble {
+  position: relative; aspect-ratio: 1; border-radius: 22px;
+  background: #FFFBF4; border: 4px solid var(--line);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  padding: 8px; min-width: 0;
+}
+.bubble .thumb { width: 82%; flex: 1; min-height: 0; }
+.bubble .name { font-size: clamp(14px, 2vw, 18px); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.bubble.done { border-color: var(--wc); }
+.bubble.next { border-color: var(--wc); animation: pulse 1.6s ease-in-out infinite; }
+.bubble.locked { opacity: .45; }
+.bubble.locked .lock { width: 30px; height: 30px; color: var(--muted); }
+.bubble .badge {
+  position: absolute; top: -10px; inset-inline-start: -10px;
+  display: flex; align-items: center; gap: 2px; background: var(--yellow);
+  border-radius: 14px; padding: 2px 8px 2px 6px; font-family: 'Secular One', sans-serif; font-size: 15px;
+}
+.bubble .badge svg { width: 16px; height: 16px; color: #fff; }
+.world.free { border-top-color: var(--pink); display: flex; align-items: center; gap: 18px; padding: 16px 20px; }
+.world.free .free-art { width: 90px; height: 70px; flex: none; }
+.world.free h2 { font-family: 'Secular One', sans-serif; font-size: 26px; margin: 0; color: var(--pink); }
+.world.free p { margin: 2px 0 0; color: var(--muted); }
+
+/* ---------- שיעור ---------- */
+.topbar {
+  display: flex; align-items: center; gap: 12px;
+  padding: max(10px, env(safe-area-inset-top)) 16px 6px;
+}
+.lesson-head { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; font-family: 'Secular One', sans-serif; font-size: 26px; }
+.step-dots { display: flex; gap: 8px; }
+.step-dots i { width: 14px; height: 14px; border-radius: 50%; background: var(--line); transition: background .3s, transform .3s; }
+.step-dots i.on { background: var(--purple); }
+.step-dots i.now { background: var(--pink); transform: scale(1.35); }
+.spacer { width: 56px; }
+
+.caption-row { display: flex; align-items: center; gap: 10px; padding: 0 16px 6px; min-height: 64px; }
+.talker { width: 40px; height: 64px; flex: none; }
+.talker .mascot { width: 100%; height: 100%; }
+.talker.talking .mascot { animation: talk .35s ease-in-out infinite alternate; }
+.caption { margin: 0; font-size: clamp(17px, 2.2vw, 22px); line-height: 1.35; flex: 1; }
+
+.workspace { flex: 1; min-height: 0; display: flex; gap: 12px; padding: 0 12px max(12px, env(safe-area-inset-bottom)); }
+.stage-wrap { flex: 1; min-width: 0; min-height: 0; display: grid; place-items: center; }
+#stage {
+  position: relative; background: #fff; border-radius: 22px; box-shadow: var(--shadow);
+  overflow: hidden; touch-action: none;
+}
+#stage canvas, #stage svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+#guide { pointer-events: none; }
+#stage.waiting { cursor: wait; }
+
+.g-demo { fill: none; stroke: var(--purple); stroke-width: 11; stroke-linecap: round; stroke-linejoin: round; }
+.g-dot.g-demo { fill: var(--purple); fill-opacity: 0; }
+.g-trace { fill: none; stroke: #A9B4C2; stroke-width: 9; stroke-linecap: round; stroke-dasharray: 1 20; opacity: .9; }
+.g-dot.g-trace { fill: #C9D1DB; stroke: none; }
+
+.tools { width: 136px; flex: none; display: flex; flex-direction: column; align-items: center; gap: 12px; overflow-y: auto; padding: 4px 0; }
+.palette { display: grid; grid-template-columns: repeat(2, 52px); gap: 10px; }
+.palette.pulse { animation: pulse 1.2s ease-in-out 4; border-radius: 18px; }
+.swatch { width: 52px; height: 52px; border-radius: 50%; background: var(--c); box-shadow: inset 0 -4px 0 rgba(0, 0, 0, .15); border: 4px solid #fff; outline: 0 solid var(--ink); transition: transform .15s; }
+.swatch.sel { outline: 4px solid var(--ink); transform: scale(1.1); }
+.brushes { display: flex; gap: 10px; }
+.tool-btn { width: 56px; height: 56px; border-radius: 18px; background: var(--card); box-shadow: var(--shadow); display: grid; place-items: center; }
+.tool-btn svg { width: 30px; height: 30px; }
+.tool-btn.sel { background: var(--ink); color: #fff; }
+.done-btn {
+  width: 112px; height: 112px; border-radius: 50%; margin-top: auto;
+  background: var(--green); color: #fff; display: grid; place-items: center;
+  box-shadow: 0 7px 0 #168A56, 0 14px 26px rgba(34, 181, 115, .35);
+  transition: opacity .2s, filter .2s;
+}
+.done-btn svg { width: 60px; height: 60px; }
+.done-btn:disabled { opacity: .35; filter: grayscale(.6); box-shadow: 0 7px 0 #9AA; }
+.done-btn:not(:disabled) { animation: pulse 1.4s ease-in-out infinite; }
+
+/* מסך לאורך: כלים מתחת ללוח */
+@media (orientation: portrait) {
+  .workspace { flex-direction: column; }
+  .tools { width: auto; flex-direction: row; flex-wrap: wrap; justify-content: center; overflow: visible; }
+  .palette { grid-template-columns: repeat(5, 46px); gap: 8px; }
+  .swatch { width: 46px; height: 46px; }
+  .done-btn { width: 92px; height: 92px; margin-top: 0; }
+}
+
+/* ---------- גלריה ---------- */
+.gallery-grid { flex: 1; overflow-y: auto; padding: 8px 20px 32px; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; align-content: start; }
+.g-item { background: var(--card); border-radius: 18px; box-shadow: var(--shadow); padding: 10px; text-align: center; }
+.g-item img { width: 100%; aspect-ratio: 10 / 7; object-fit: cover; border-radius: 12px; background: #fff; display: block; }
+.g-item span { display: block; margin-top: 6px; font-size: 17px; }
+.g-item small { color: var(--muted); }
+.empty { grid-column: 1 / -1; text-align: center; color: var(--muted); font-size: 22px; padding: 60px 0; }
+
+/* ---------- חגיגה ---------- */
+.overlay { position: fixed; inset: 0; z-index: 10; display: grid; place-items: center; background: rgba(255, 244, 228, .92); }
+.overlay[hidden] { display: none; }
+#confetti { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.celebrate-card { position: relative; display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 16px; max-width: 94vw; }
+.celebrate-mascot { width: 90px; height: 150px; }
+.celebrate-mascot .mascot { width: 100%; height: 100%; animation: dance .6s ease-in-out infinite alternate; }
+.celebrate-card h2 { font-family: 'Secular One', sans-serif; font-size: clamp(32px, 6vw, 52px); margin: 0; color: var(--purple); }
+#celebrateImg { width: min(420px, 70vw); aspect-ratio: 10 / 7; border-radius: 18px; border: 8px solid #fff; box-shadow: var(--shadow); background: #fff; transform: rotate(-2deg); }
+.star-burst { display: flex; align-items: center; gap: 6px; font-family: 'Secular One', sans-serif; font-size: 30px; }
+.star-burst svg { width: 52px; height: 52px; color: var(--yellow); animation: spin-pop 1s ease-out both; }
+.celebrate-btns { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+.pill-btn { display: flex; align-items: center; gap: 8px; height: 64px; padding: 0 24px; border-radius: 32px; background: var(--card); box-shadow: var(--shadow); font-size: 22px; }
+.pill-btn svg { width: 28px; height: 28px; }
+.pill-btn.primary { background: var(--purple); color: #fff; box-shadow: 0 6px 0 #5A43D6; }
+#viewer img { max-width: 94vw; max-height: 90vh; border-radius: 16px; border: 8px solid #fff; box-shadow: var(--shadow); background: #fff; }
+
+/* ---------- תנועה ---------- */
+@keyframes bob { 0%, 100% { transform: translateY(0) rotate(-3deg); } 50% { transform: translateY(-8px) rotate(3deg); } }
+@keyframes talk { from { transform: rotate(-5deg) translateY(0); } to { transform: rotate(5deg) translateY(-4px); } }
+@keyframes dance { from { transform: rotate(-12deg) translateY(0); } to { transform: rotate(12deg) translateY(-14px); } }
+@keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.06); } }
+@keyframes spin-pop { 0% { transform: scale(0) rotate(-180deg); } 70% { transform: scale(1.3) rotate(10deg); } 100% { transform: scale(1) rotate(0); } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; } }

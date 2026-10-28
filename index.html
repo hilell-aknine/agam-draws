@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#FFF4E4">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<title>אגם מציירת</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Secular+One&family=Varela+Round&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.8-4.9 4.6 1.3 6.5L12 17.2l-5.9 3.2 1.3-6.5L2.5 9.3l6.6-.8z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11.5L12 4l9 7.5M5.5 9.5V20h5v-5.5h3V20h5V9.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-replay" viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 2.4-5.7M4 4v4.5h4.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-undo" viewBox="0 0 24 24"><path d="M9 7L4 12l5 5M4.5 12H15a5 5 0 0 1 0 10h-2" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M4.5 12.5l5 5L20 7" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="2.5" fill="currentColor"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5" fill="none" stroke="currentColor" stroke-width="2.4"/></symbol>
+  <symbol id="i-gallery" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="9" cy="10" r="2" fill="currentColor"/><path d="M4 18l5-5 4 4 3-3 4 4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></symbol>
+  <symbol id="i-next" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-thin" viewBox="0 0 24 24"><path d="M4 18c4-9 8 3 16-10" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></symbol>
+  <symbol id="i-thick" viewBox="0 0 24 24"><path d="M5 17c4-8 8 2 14-9" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round"/></symbol>
+</svg>
+
+<main id="app">
+  <!-- בית -->
+  <section id="home" class="screen active">
+    <header class="home-top">
+      <button id="homeMascot" class="home-mascot" aria-label="עפרונית"></button>
+      <div class="hello">
+        <h1>שלום אגם!</h1>
+        <p>מה מציירים היום?</p>
+      </div>
+      <div class="home-actions">
+        <div class="star-pill" aria-label="כוכבים"><svg><use href="#i-star"/></svg><span id="starCount">0</span></div>
+        <button id="btnGallery" class="round-btn" aria-label="הגלריה שלי"><svg><use href="#i-gallery"/></svg></button>
+      </div>
+    </header>
+    <div id="worlds" class="worlds"></div>
+  </section>
+
+  <!-- שיעור -->
+  <section id="lesson" class="screen">
+    <header class="topbar">
+      <button id="btnHome" class="round-btn small" aria-label="הביתה"><svg><use href="#i-home"/></svg></button>
+      <div class="lesson-head">
+        <span id="lessonTitle"></span>
+        <div id="stepDots" class="step-dots"></div>
+      </div>
+      <button id="btnReplay" class="round-btn small" aria-label="תראי לי שוב"><svg><use href="#i-replay"/></svg></button>
+    </header>
+    <div class="caption-row">
+      <div id="talker" class="talker"></div>
+      <p id="caption" class="caption"></p>
+    </div>
+    <div class="workspace">
+      <div class="stage-wrap">
+        <div id="stage">
+          <canvas id="colorLayer"></canvas>
+          <canvas id="lineLayer"></canvas>
+          <svg id="guide" viewBox="0 0 1000 700">
+            <g id="guideNow"></g>
+            <g id="pen" style="display:none"><g transform="rotate(28) scale(0.55) translate(-60 -196)" id="penBody"></g></g>
+          </svg>
+        </div>
+      </div>
+      <aside class="tools">
+        <div id="palette" class="palette"></div>
+        <div class="brushes">
+          <button data-brush="thin" class="tool-btn" aria-label="קו דק"><svg><use href="#i-thin"/></svg></button>
+          <button data-brush="thick" class="tool-btn" aria-label="צביעה"><svg><use href="#i-thick"/></svg></button>
+        </div>
+        <button id="btnUndo" class="tool-btn" aria-label="בטל"><svg><use href="#i-undo"/></svg></button>
+        <button id="btnDone" class="done-btn" aria-label="סיימתי" disabled><svg><use href="#i-check"/></svg></button>
+      </aside>
+    </div>
+  </section>
+
+  <!-- גלריה -->
+  <section id="gallery" class="screen">
+    <header class="topbar">
+      <button id="btnGalleryBack" class="round-btn small" aria-label="הביתה"><svg><use href="#i-home"/></svg></button>
+      <div class="lesson-head"><span>הגלריה של אגם</span></div>
+      <span class="spacer"></span>
+    </header>
+    <div id="galleryGrid" class="gallery-grid"></div>
+  </section>
+</main>
+
+<!-- חגיגה בסוף שיעור -->
+<div id="celebrate" class="overlay" hidden>
+  <canvas id="confetti"></canvas>
+  <div class="celebrate-card">
+    <div id="celebrateMascot" class="celebrate-mascot"></div>
+    <h2 id="celebrateTitle">כל הכבוד אגם!</h2>
+    <img id="celebrateImg" alt="הציור של אגם">
+    <div class="star-burst"><svg><use href="#i-star"/></svg><span id="celebrateStars"></span></div>
+    <div class="celebrate-btns">
+      <button id="btnAgain" class="pill-btn"><svg><use href="#i-replay"/></svg>שוב</button>
+      <button id="btnNext" class="pill-btn primary"><svg><use href="#i-next"/></svg>לציור הבא</button>
+      <button id="btnCelebrateHome" class="pill-btn"><svg><use href="#i-home"/></svg>הביתה</button>
+    </div>
+  </div>
+</div>
+
+<!-- תצוגת ציור מהגלריה -->
+<div id="viewer" class="overlay" hidden><img id="viewerImg" alt=""></div>
+
+<script src="mascot.js"></script>
+<script src="lessons.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
