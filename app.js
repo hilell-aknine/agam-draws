@@ -424,6 +424,7 @@
     progress.done[L.id] = (progress.done[L.id] || 0) + 1;
     progress.stars += 1;
     saveProgress();
+    pushToCloud({ id, lessonId: L.id, title: L.title, img });
 
     const idx = allLessons.findIndex((l) => l.id === L.id);
     const next = idx >= 0 ? allLessons[idx + 1] : null;
@@ -514,6 +515,101 @@
     }
   }
   $('#btnGalleryBack').addEventListener('click', goHome);
+
+  // ---------- ענן ----------
+  // הטאבלט הוא המקור הראשי; הענן הוא גיבוי ומאפשר להמשיך במכשיר אחר.
+  const cloud = window.DrawCloud;
+  const cloudState = (s) => { $('#btnCloud').dataset.state = s; };
+  let syncing = null;
+
+  function mergeProgress(remote) {
+    if (!remote || !remote.done) return;
+    for (const [k, v] of Object.entries(remote.done)) progress.done[k] = Math.max(progress.done[k] || 0, v);
+    const sum = Object.values(progress.done).reduce((a, b) => a + b, 0);
+    progress.stars = Math.max(progress.stars, remote.stars || 0, sum);
+    saveProgress();
+  }
+
+  function syncAll() {
+    if (!cloud.email()) return Promise.resolve();
+    if (syncing) return syncing;
+    cloudState('sync');
+    syncing = (async () => {
+      try {
+        mergeProgress(await cloud.pullProgress());
+        await cloud.pushProgress(progress);
+        const [local, rows] = await Promise.all([gallery.all(), cloud.listDrawings()]);
+        const remoteIds = new Set(rows.map((r) => String(r.id)));
+        const localIds = new Set(local.map((it) => String(it.id)));
+        for (const it of local) if (!remoteIds.has(String(it.id))) await cloud.uploadDrawing(it);
+        for (const row of rows) {
+          if (localIds.has(String(row.id))) continue;
+          const img = await cloud.downloadDrawing(row);
+          await gallery.add({ id: Number(row.id), lessonId: row.lesson_id, title: row.title, img });
+        }
+        cloudState('ok');
+        if (screen === 'home') renderHome();
+      } catch (e) {
+        console.warn('cloud sync failed', e);
+        cloudState('error');
+      } finally { syncing = null; }
+    })();
+    return syncing;
+  }
+
+  async function pushToCloud(item) {
+    if (!cloud.email()) return;
+    try {
+      cloudState('sync');
+      await cloud.uploadDrawing(item);
+      await cloud.pushProgress(progress);
+      cloudState('ok');
+    } catch (e) {
+      console.warn('cloud push failed', e);
+      cloudState('error'); // ייעלה בסנכרון הבא
+    }
+  }
+
+  const CLOUD_ERR = {
+    bad_email: 'המייל לא תקין.',
+    not_allowed: 'המייל הזה לא ברשימת המורשים של החווה.',
+    not_farm_account: 'המייל קיים, אבל לא כחשבון של החווה.',
+    offline: 'אין חיבור לאינטרנט כרגע. נסו שוב.',
+    server: 'משהו השתבש. נסו שוב בעוד רגע.',
+  };
+  async function openCloudBox() {
+    const inn = !!cloud.email();
+    $('#cloudOut').hidden = inn; $('#cloudIn').hidden = !inn;
+    $('#btnCloudLogout').hidden = !inn;
+    $('#btnCloudMain').textContent = inn ? 'לסנכרן עכשיו' : 'התחברות';
+    $('#cloudMsg').textContent = '';
+    if (inn) {
+      $('#cloudWho').textContent = cloud.email();
+      const n = (await gallery.all()).length;
+      $('#cloudCount').textContent = `${n} ציורים ו-${progress.stars} כוכבים נשמרים בענן.`;
+    }
+    $('#cloudBox').hidden = false;
+  }
+  $('#btnCloud').addEventListener('click', openCloudBox);
+  $('#btnCloudClose').addEventListener('click', () => { $('#cloudBox').hidden = true; });
+  $('#btnCloudLogout').addEventListener('click', async () => { await cloud.logout(); cloudState('off'); openCloudBox(); });
+  $('#cloudForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = $('#btnCloudMain');
+    btn.disabled = true;
+    $('#cloudMsg').textContent = '';
+    try {
+      if (!cloud.email()) await cloud.login($('#cloudEmail').value);
+      await syncAll();
+      if ($('#btnCloud').dataset.state === 'error') $('#cloudMsg').textContent = CLOUD_ERR.server;
+      else await openCloudBox();
+    } catch (err) {
+      $('#cloudMsg').textContent = CLOUD_ERR[err.message] || CLOUD_ERR.server;
+    } finally { btn.disabled = false; }
+  });
+
+  cloud.init().then((ok) => { if (ok) syncAll(); });
+  window.addEventListener('online', () => syncAll());
 
   document.addEventListener('contextmenu', (e) => e.preventDefault());
   setTool('thin', COLORS[0]);
