@@ -417,8 +417,10 @@
 
   async function finishLesson(run) {
     phase = 'done'; stepIdx = L.free ? 0 : L.steps.length + 1; renderDots();
-    const img = composite();
-    gallery.add({ id: Date.now(), lessonId: L.id, title: L.title, img });
+    const img = composite(), id = Date.now();
+    gallery.add({ id, lessonId: L.id, title: L.title, img });
+    resetSaveBtn($('#btnSaveCelebrate'));
+    $('#btnSaveCelebrate').onclick = (e) => saveToPhotos(img, id, e.currentTarget);
     progress.done[L.id] = (progress.done[L.id] || 0) + 1;
     progress.stars += 1;
     saveProgress();
@@ -476,9 +478,41 @@
     const it = e.target.closest('.g-item');
     if (!it) return;
     $('#viewerImg').src = it.querySelector('img').src;
+    $('#viewerImg').dataset.id = it.dataset.id;
+    resetSaveBtn($('#btnSaveViewer'));
     $('#viewer').hidden = false;
   });
-  $('#viewer').addEventListener('click', () => { $('#viewer').hidden = true; });
+  $('#viewer').addEventListener('click', (e) => { if (e.target.id === 'viewer') $('#viewer').hidden = true; });
+  $('#btnCloseViewer').addEventListener('click', () => { $('#viewer').hidden = true; });
+  $('#btnSaveViewer').addEventListener('click', (e) =>
+    saveToPhotos($('#viewerImg').src, Number($('#viewerImg').dataset.id), e.currentTarget));
+
+  // ---------- שמירה לאלבום התמונות ----------
+  // בטאבלט נפתח חלון השיתוף ("שמור תמונה"); במחשב הקובץ יורד.
+  function resetSaveBtn(btn) {
+    btn.classList.remove('saved');
+    btn.lastChild.textContent = 'שמור לתמונות';
+  }
+  async function saveToPhotos(dataUrl, id, btn) {
+    const d = new Date(id || Date.now());
+    const name = `agam-${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}-${d.getHours()}${String(d.getMinutes()).padStart(2, '0')}.jpg`;
+    try {
+      const blob = await (await fetch(dataUrl)).blob();
+      const file = new File([blob], name, { type: 'image/jpeg' });
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({ files: [file], title: 'הציור של אגם' });
+      } else {
+        const a = document.createElement('a');
+        a.href = dataUrl; a.download = name;
+        document.body.appendChild(a); a.click(); a.remove();
+      }
+      btn.classList.add('saved');
+      btn.lastChild.textContent = 'נשמר!';
+      chime([880, 1175]);
+    } catch (e) {
+      if (e.name !== 'AbortError') console.warn('save failed', e);
+    }
+  }
   $('#btnGalleryBack').addEventListener('click', goHome);
 
   document.addEventListener('contextmenu', (e) => e.preventDefault());

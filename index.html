@@ -24,6 +24,7 @@
   <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="2.5" fill="currentColor"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5" fill="none" stroke="currentColor" stroke-width="2.4"/></symbol>
   <symbol id="i-gallery" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="9" cy="10" r="2" fill="currentColor"/><path d="M4 18l5-5 4 4 3-3 4 4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></symbol>
   <symbol id="i-next" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-save" viewBox="0 0 24 24"><path d="M12 4v11M7 10.5l5 5 5-5M5 20h14" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
   <symbol id="i-thin" viewBox="0 0 24 24"><path d="M4 18c4-9 8 3 16-10" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></symbol>
   <symbol id="i-thick" viewBox="0 0 24 24"><path d="M5 17c4-8 8 2 14-9" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round"/></symbol>
 </svg>
@@ -102,6 +103,7 @@
     <img id="celebrateImg" alt="הציור של אגם">
     <div class="star-burst"><svg><use href="#i-star"/></svg><span id="celebrateStars"></span></div>
     <div class="celebrate-btns">
+      <button id="btnSaveCelebrate" class="pill-btn"><svg><use href="#i-save"/></svg>שמור לתמונות</button>
       <button id="btnAgain" class="pill-btn"><svg><use href="#i-replay"/></svg>שוב</button>
       <button id="btnNext" class="pill-btn primary"><svg><use href="#i-next"/></svg>לציור הבא</button>
       <button id="btnCelebrateHome" class="pill-btn"><svg><use href="#i-home"/></svg>הביתה</button>
@@ -110,7 +112,15 @@
 </div>
 
 <!-- תצוגת ציור מהגלריה -->
-<div id="viewer" class="overlay" hidden><img id="viewerImg" alt=""></div>
+<div id="viewer" class="overlay" hidden>
+  <div class="viewer-card">
+    <img id="viewerImg" alt="">
+    <div class="celebrate-btns">
+      <button id="btnSaveViewer" class="pill-btn primary"><svg><use href="#i-save"/></svg>שמור לתמונות</button>
+      <button id="btnCloseViewer" class="pill-btn"><svg><use href="#i-next"/></svg>חזרה</button>
+    </div>
+  </div>
+</div>
 
 <script src="mascot.js"></script>
 <script src="lessons.js"></script>
